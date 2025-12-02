@@ -1,0 +1,462 @@
+/* Gunakan font Poppins */
+:root {
+  --bg-1: #f6f7fb;
+  --bg-2: #eef3fb;
+  --card: rgba(255, 255, 255, 0.85);
+  --muted: #6b7280;
+  --accent: linear-gradient(135deg, #6a11cb, #2575fc);
+  --glass-shadow: 0 8px 30px rgba(20, 25, 40, 0.06);
+  --soft-shadow: 0 10px 30px rgba(2, 8, 23, 0.06);
+  --radius: 14px;
+  --glass-border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+html {
+  scroll-behavior: smooth; /* smooth scrolling for anchor links */
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: radial-gradient(
+      1200px 600px at 10% 0%,
+      rgba(40, 60, 120, 0.03),
+      transparent
+    ),
+    linear-gradient(180deg, var(--bg-1), var(--bg-2));
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+/* Header dengan foto profil */
+header {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.02)
+  );
+  color: #0b1220;
+  padding: 2.25rem 1.25rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(9, 10, 12, 0.04);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(6px);
+}
+
+.profile-pic {
+  width: 120px;
+  height: 120px;
+  border-radius: 28px; /* soft rounded */
+  border: 6px solid rgba(255, 255, 255, 0.6); /* soft outline */
+  box-shadow: var(--soft-shadow);
+  transition: transform 0.3s ease; /* animasi halus */
+}
+
+.profile-pic:hover {
+  transform: scale(1.1) rotate(3deg); /* efek hover */
+}
+
+/* Section styling */
+section {
+  padding: 2rem;
+  margin: 1.25rem auto;
+  max-width: 1100px;
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--glass-shadow);
+  border: var(--glass-border);
+  transition: transform 0.3s ease;
+}
+
+section:hover {
+  transform: translateY(-5px); /* efek hover */
+}
+/* ===== KODE TAMBAHAN: styling ikon panah ===== */
+.arrow {
+  display: inline-block;
+  font-size: 24px;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: transform 0.4s ease; /* animasi rotasi */
+  color: #fff; /* warna putih biar kontras di header */
+}
+
+/* header layout and nav */
+.header-inner {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile {
+  /* keep profile inline in header */
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-toggle {
+  /* mobile toggle visible on small screens */
+  display: none;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  color: #0b1220;
+  cursor: pointer;
+}
+
+.main-nav {
+  /* primary nav centered under header */
+  display: block;
+  margin-top: 12px;
+}
+
+.main-nav ul {
+  list-style: none;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+}
+.main-nav a {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 12px;
+  color: #0b1220;
+  text-decoration: none;
+  font-weight: 600;
+  opacity: 0.9;
+  transition: all 0.18s ease;
+}
+.main-nav a:hover {
+  transform: translateY(-3px);
+  background: rgba(37, 117, 252, 0.08);
+  color: #123;
+  box-shadow: 0 6px 18px rgba(2, 8, 23, 0.05);
+}
+.main-nav a.active {
+  background: rgba(37, 117, 252, 0.11);
+  color: #0059ff;
+  box-shadow: 0 6px 18px rgba(37, 117, 252, 0.08);
+}
+
+.arrow.up {
+  transform: rotate(180deg); /* rotasi panah ke atas */
+}
+/* >>> KODE TAMBAHAN: animasi bounce <<< */
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.arrow.bounce {
+  animation: bounce 0.6s infinite; /* panah mantul kecil */
+}
+
+.hidden {
+  display: none;
+}
+.visible {
+  display: block;
+}
+/* ===== KODE TAMBAHAN: animasi fade-in/out untuk info ===== */
+.info-container {
+  opacity: 0; /* awalnya transparan */
+  max-height: 0; /* sembunyikan tinggi */
+  overflow: hidden; /* biar konten gak bocor */
+  transition: opacity 0.8s ease, max-height 0.8s ease; /* animasi halus */
+}
+
+/* increase spacing for sections to feel airy */
+section h2 {
+  font-size: 1.35rem;
+  letter-spacing: 0.2px;
+  color: #0f1724;
+  margin-bottom: 1rem;
+}
+
+.info-container.visible {
+  opacity: 1; /* jadi terlihat */
+  max-height: 2000px; /* cukup besar biar semua section muat */
+}
+/* styling Ikon Skill */
+.skill {
+  margin: 1.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.skill-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 2);
+  transition: transform 0.3s ease;
+}
+
+.skill-icon:hover {
+  transform: scale(1.1);
+}
+
+.skill span {
+  font-weight: 600;
+  flex: 1;
+}
+
+/* Project card */
+.project-card {
+  background: #eee;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  transition: background 0.3s ease;
+}
+
+.project-card:hover {
+  background: #ddd;
+}
+
+/* ===== Tambahan Styling Skill Section ===== */
+.skill {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.skill span {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #444; /* warna teks elegan */
+}
+
+.skill-bar {
+  flex: 1; /*bar ngambil sisa ruang */
+  background: #e0e0e0; /* warna abu elegan */
+  border-radius: 20px;
+  overflow: hidden;
+  height: 25px;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.skill-fill {
+  background: linear-gradient(135deg, #6a11cb, #2575fc); /* gradasi elegan */
+  height: 100%;
+  color: #fff;
+  text-align: right;
+  padding-right: 10px;
+  line-height: 25px;
+  border-radius: 20px 0 0 20px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: width 1s ease; /* animasi halus */
+}
+
+/* Animasi fade-in */
+.fade-in {
+  opacity: 0; /* awalnya transparan */
+  transform: translateY(20px); /* geser sedikit ke bawah */
+  transition: opacity 0.8s ease, transform 0.8s ease; /* animasi halus */
+}
+
+.fade-in.visible {
+  opacity: 1; /* jadi terlihat */
+  transform: translateY(0); /* kembali ke posisi normal */
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  header {
+    padding: 2rem 1rem;
+  }
+  .profile-pic {
+    width: 90px;
+    height: 90px;
+  }
+  section {
+    margin: 0.5rem;
+    padding: 1rem;
+  }
+}
+
+/* ===== Section-specific layouts ===== */
+
+/* ABOUT: two-column layout (photo + text) */
+.about-section .about-content {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.about-section .about-photo img {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 3px solid rgba(0, 0, 0, 0.06);
+}
+
+.about-section .about-text p {
+  margin: 0 0 0.75rem 0;
+  line-height: 1.5;
+}
+
+.about-highlights {
+  margin: 0.5rem 0 0 0;
+  padding-left: 1.25rem;
+}
+
+/* PROJECTS: grid of cards */
+.projects-section .projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.projects-section .project-card {
+  padding: 1rem;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #ffffff, #f7f9ff);
+  box-shadow: 0 6px 18px rgba(40, 42, 63, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.projects-section .project-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(40, 42, 63, 0.12);
+}
+
+/* SKILLS: grid of cards with progress */
+.skills-section .skills-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.skills-section .skill-card {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.9),
+    rgba(248, 250, 255, 0.9)
+  );
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+}
+
+/* subtle focus for accessible keyboard focus */
+.skill-card:focus {
+  outline: 2px solid rgba(37, 117, 252, 0.12);
+  box-shadow: 0 8px 30px rgba(37, 117, 252, 0.05);
+}
+
+.skills-section .skill-card .skill-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+}
+
+.skills-section .skill-card h4 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.skill-desc {
+  color: #666;
+  font-size: 13px;
+  margin: 0.25rem 0 0 0;
+}
+
+/* collapsed vs expanded skill card */
+.skills-section .skill-card .skill-desc {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.35s ease;
+  opacity: 0;
+}
+
+.skills-section .skill-card.expanded .skill-desc {
+  max-height: 240px; /* enough for short descriptions */
+  opacity: 1;
+}
+
+/* CONTACT: centered card */
+.contact-section .contact-card {
+  display: block;
+  text-align: center;
+  padding: 1.25rem;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #fefefe, #f4fbff);
+  box-shadow: 0 8px 22px rgba(2, 6, 23, 0.06);
+}
+
+/* Mobile responsiveness: show nav-toggle and collapse nav */
+@media (max-width: 880px) {
+  .nav-toggle {
+    display: inline-flex;
+  }
+  .main-nav {
+    display: none;
+  }
+  .main-nav.open {
+    display: block;
+  }
+  .main-nav ul {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.contact-section .contact-card a {
+  color: #2575fc;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.contact-note {
+  color: #777;
+  font-size: 13px;
+  margin-top: 0.5rem;
+}
+
+/* Responsive tweaks for section-specific layouts */
+@media (max-width: 1000px) {
+  .projects-section .projects-grid,
+  .skills-section .skills-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .about-section .about-content {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .projects-section .projects-grid,
+  .skills-section .skills-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-section .about-photo img {
+    margin: 0 auto;
+  }
+}

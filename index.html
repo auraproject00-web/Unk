@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portofolio Unk</title>
+    <!-- Import Google Font Poppins -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header id="header">
+      <div class="header-inner">
+        <div class="profile">
+          <!-- Foto profil dengan styling elegan -->
+          <img src="assets/DSC05623.jpg" alt="Foto Unk" class="profile-pic" />
+          <h1>Halo, gue Unk 👋</h1>
+          <p>Ngoding • Ngedit • Gaming • Ngopi</p>
+          <span id="toggle-icon" class="arrow">&#9660;</span>
+        </div>
+
+        <!-- Mobile nav toggle -->
+        <button id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">☰</button>
+      </div>
+
+      <!-- Main navigation -->
+      <nav class="main-nav" aria-label="Main navigation">
+        <ul>
+          <li><a class="nav-link" href="#about">Tentang</a></li>
+          <li><a class="nav-link" href="#projects">Proyek</a></li>
+          <li><a class="nav-link" href="#skills">Skill</a></li>
+          <li><a class="nav-link" href="#contact">Kontak</a></li>
+        </ul>
+      </nav>
+    </header>
+ <!-- ===== INFORMASI YANG DISembunyikan ===== -->
+  <!-- >>> KODE TAMBAHAN: awalnya hidden, nanti muncul saat header diklik <<< -->
+  <div id="info" class="info-container hidden">
+
+    <!-- Section About -->
+    <section id="about" class="fade-in about-section">
+      <h2>Tentang Gue</h2>
+      <div class="about-content">
+        <div class="about-photo">
+          <img src="assets/DSC05623.jpg" alt="Foto Unk" />
+        </div>
+        <div class="about-text">
+          <p>
+            Gue lagi belajar web development dari nol. Suka bikin mini project
+            dan ngulik HTML, CSS, JS. Saat ini fokus belajar membuat antarmuka
+            yang sederhana, cepat, dan mudah diakses.
+          </p>
+          <ul class="about-highlights">
+            <li>Belajar: HTML, CSS, JavaScript</li>
+            <li>Membuat mini project tiap minggu</li>
+            <li>Suka desain UI sederhana dan responsif</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Projects -->
+    <section id="projects" class="fade-in projects-section">
+      <h2>Proyek</h2>
+      <div class="projects-grid">
+        <article class="project-card">
+          <h3>Biodata Website</h3>
+          <p>Website biodata interaktif pakai HTML, CSS, dan JavaScript.</p>
+        </article>
+        <article class="project-card">
+          <h3>Mini Game JS</h3>
+          <p>Permainan sederhana berbasis JavaScript untuk latihan DOM.</p>
+        </article>
+        <article class="project-card">
+          <h3>Portfolio V1</h3>
+          <p>Halaman portofolio statis yang responsif untuk presentasi karya.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===== Tambahan Section Skill ===== -->
+    <section id="skills" class="fade-in skills-section">
+      <h2>Skill</h2>
+      <div class="skills-grid">
+        <div class="skill-card">
+          <img src="assets/ChatGPT Image Dec 2, 2025, 09_57_06 AM.png" alt="Premier Pro" class="skill-icon" />
+          <h4>Adobe Premiere Pro</h4>
+          <div class="skill-bar">
+            <div class="skill-fill" style="width: 90%">90%</div>
+          </div>
+          <p class="skill-desc">Editing video & timeline workflow, transisi dasar.</p>
+        </div>
+
+        <div class="skill-card">
+          <img src="assets/ChatGPT Image Dec 2, 2025, 09_58_30 AM.png" alt="After Effect" class="skill-icon" />
+          <h4>After Effects</h4>
+          <div class="skill-bar">
+            <div class="skill-fill" style="width: 80%">80%</div>
+          </div>
+          <p class="skill-desc">Animasi layer sederhana dan efek komposisi.</p>
+        </div>
+
+        <div class="skill-card">
+          <img src="assets/ChatGPT Image Dec 2, 2025, 10_00_14 AM.png" alt="Lightroom" class="skill-icon" />
+          <h4>Lightroom</h4>
+          <div class="skill-bar">
+            <div class="skill-fill" style="width: 90%">90%</div>
+          </div>
+          <p class="skill-desc">Pengolahan warna dan perbaikan foto cepat.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Contact -->
+    <section id="contact" class="fade-in contact-section">
+      <h2>Kontak</h2>
+      <div class="contact-card">
+        <p>
+          Email: <a href="mailto:unk@example.com">unk@example.com</a>
+        </p>
+        <p>
+          Twitter: <a href="#">@unk_dev</a> • Instagram: <a href="#">@unk</a>
+        </p>
+        <p class="contact-note">Biasanya bales hari kerja — ayo kolaborasi!</p>
+      </div>
+    </section>
+
+    <!-- Script untuk animasi scroll -->
+    <script src="script.js"></script>
+  </body>
+</html>
