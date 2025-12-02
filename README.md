@@ -35,4 +35,5 @@ Notes:
 - The action uses the built-in `GITHUB_TOKEN` so you don't need to add secrets.
 
 ---
+
 Trigger note: small update pushed to trigger GitHub Actions deploy on main branch.
