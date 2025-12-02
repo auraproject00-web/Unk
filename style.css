@@ -33,7 +33,12 @@ body {
   background-repeat: no-repeat;
   background-attachment: fixed; /* keep image visible while reading content */
   min-height: 100vh; /* ensure image fills at least the viewport */
-  background-color: rgba(6, 12, 28, 0.6); /* fallback color when image hasn't loaded */
+  background-color: rgba(
+    6,
+    12,
+    28,
+    0.6
+  ); /* fallback color when image hasn't loaded */
   margin: 0;
   padding: 0;
   color: #333;
@@ -74,11 +79,64 @@ section {
   padding: 2rem;
   margin: 1.25rem auto;
   max-width: 1100px;
-  background: var(--card);
+  /* make the section visually 'liquid-glass' — base is transparent so we can show background behind */
+  background: transparent;
   border-radius: var(--radius);
-  box-shadow: var(--glass-shadow);
-  border: var(--glass-border);
-  transition: transform 0.3s ease;
+  position: relative; /* for pseudo-element layering */
+  overflow: hidden; /* keep glass edges clean */
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
+}
+
+/* Liquid glass layer: blurred background + soft gradient and border */
+section::before {
+  content: "";
+  position: absolute;
+  inset: 0; /* fill the section */
+  z-index: 0; /* sit behind content */
+  margin: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.06));
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 8px 30px rgba(2, 8, 23, 0.06), inset 0 1px 0 rgba(255,255,255,0.06);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  pointer-events: none; /* allow clicks through */
+}
+
+/* Small sheen/gloss using a soft diagonal highlight */
+section::after {
+  content: "";
+  position: absolute;
+  left: -30%;
+  top: -40%;
+  width: 160%;
+  height: 80%;
+  z-index: 1; /* sits above ::before but below content */
+  background: linear-gradient(120deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
+  transform: rotate(-8deg);
+  filter: blur(18px) brightness(1.02);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* ensure content sits above the glass layers */
+section * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Mobile / low-support fallback: reduce blur + use solid translucent background */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  section::before {
+    background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.8));
+    border: 1px solid rgba(255,255,255,0.9);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  section::after {
+    display: none;
+  }
 }
 
 /* Make sure sections respect the sticky header by offsetting scroll position */
