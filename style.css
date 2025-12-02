@@ -13,17 +13,27 @@
 
 html {
   scroll-behavior: smooth; /* smooth scrolling for anchor links */
+  /* make sure html is full height so body background fills correctly */
+  height: 100%;
 }
 
 body {
   font-family: "Poppins", sans-serif;
-    /* layered background: subtle radial pattern + photo + soft gradient overlay */
-    background-image: radial-gradient(1200px 600px at 10% 0%, rgba(40, 60, 120, 0.03), transparent),
-      linear-gradient(180deg, rgba(6, 12, 28, 0.18), rgba(6, 12, 28, 0.18)),
-      url("assets/DSC05623.jpg");
-    background-position: center, center, center;
-    background-size: cover, cover, cover;
-    background-repeat: no-repeat;
+  /* layered background: subtle radial pattern + photo + soft gradient overlay */
+  background-image: radial-gradient(
+      1200px 1920px at 10% 0%,
+      rgba(40, 60, 120, 0.03),
+      transparent
+    ),
+    linear-gradient(180deg, rgba(6, 12, 28, 0.18), rgba(6, 12, 28, 0.18)),
+    url("assets/bg_web.png");
+  /* keep the background covering the whole page and anchored nicely */
+  background-position: center top, center top, center top;
+  background-size: cover, cover, cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* keep image visible while reading content */
+  min-height: 100vh; /* ensure image fills at least the viewport */
+  background-color: rgba(6, 12, 28, 0.6); /* fallback color when image hasn't loaded */
   margin: 0;
   padding: 0;
   color: #333;
