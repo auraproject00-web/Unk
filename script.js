@@ -38,14 +38,42 @@ function checkFadeIn() {
 }
 
 // ===== Tambahan Animasi Skill Bar =====
-window.addEventListener("load", () => {
+// Robust skill-fill animation: store the intended target (percent) in data attribute
+// then animate from 0% to that target. This prevents the width becoming blank / broken
+// if UI interactions toggle or change layout after the initial animation.
+function animateSkillFills() {
   const skillFills = document.querySelectorAll(".skill-fill");
   skillFills.forEach((fill) => {
-    const width = fill.style.width; // ambil nilai width (misalnya 90%)
-    fill.style.width = "0"; // mulai dari 0
+    // try to read a stored target width first, then inline style, then fallback to inner text (e.g. "90%")
+    let target = fill.dataset.targetWidth || fill.style.width || "";
+    if (!target) {
+      const m = fill.textContent.trim().match(/(\d+)%/);
+      if (m) target = m[1] + "%";
+    }
+
+    // ensure we always have a percentage string as the target (fallback 0%)
+    if (!target || !/%$/.test(target)) target = "0%";
+
+    // persist target so future interactions can re-use it
+    fill.dataset.targetWidth = target;
+
+    // start animation from 0% then move to the target — use explicit percent strings
+    fill.style.width = "0%";
+
+    // Add a small stagger so the UI feels smoother and to allow layout to settle
+    const delay = 140 + (Array.from(skillFills).indexOf(fill) % 6) * 70;
     setTimeout(() => {
-      fill.style.width = width; // animasi ke nilai asli
-    }, 200);
+      fill.style.width = fill.dataset.targetWidth;
+    }, delay);
+  });
+}
+
+window.addEventListener("load", animateSkillFills);
+// Re-apply when window resizes or layout changes so percent widths remain correct
+window.addEventListener("resize", () => {
+  // re-apply the intended width in case the container size changed
+  document.querySelectorAll(".skill-fill").forEach((f) => {
+    if (f.dataset.targetWidth) f.style.width = f.dataset.targetWidth;
   });
 });
 
