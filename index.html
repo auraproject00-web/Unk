@@ -10,24 +10,40 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
+    <!-- Performance hints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- SEO / social -->
+    <meta name="description" content="Portofolio Unk — contoh portofolio sederhana dengan HTML, CSS, dan JavaScript. Menampilkan proyek, skill, dan kontak." />
+    <meta property="og:title" content="Portofolio Unk" />
+    <meta property="og:description" content="Portofolio Unk — mini website portofolio (HTML/CSS/JS)." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://auraproject00-web.github.io/Unk/" />
+    <meta property="og:image" content="assets/DSC05623.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
+    <!-- Skip link for keyboard users -->
+    <a class="skip-link" href="#about">Skip to content</a>
     <header id="header">
       <div class="header-inner">
         <div class="profile">
           <!-- Foto profil dengan styling elegan -->
-          <img src="assets/DSC05623.jpg" alt="Foto Unk" class="profile-pic" />
+          <picture>
+            <source srcset="assets/DSC05623.jpg" type="image/jpeg" />
+            <img src="assets/DSC05623.jpg" alt="Foto Unk" class="profile-pic" width="160" height="160" loading="lazy" decoding="async" />
+          </picture>
           <h1>Halo, gue Unk 👋</h1>
           <p>Ngoding • Ngedit • Gaming • Ngopi</p>
           <span id="toggle-icon" class="arrow">&#9660;</span>
         </div>
 
         <!-- Mobile nav toggle -->
-        <button id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">☰</button>
+        <button id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">☰</button>
       </div>
 
       <!-- Main navigation -->
-      <nav class="main-nav" aria-label="Main navigation">
+      <nav id="main-nav" class="main-nav" aria-label="Main navigation">
         <ul>
           <li><a class="nav-link" href="#about">Tentang</a></li>
           <li><a class="nav-link" href="#projects">Proyek</a></li>
@@ -85,8 +101,8 @@
     <section id="skills" class="fade-in skills-section">
       <h2>Skill</h2>
       <div class="skills-grid">
-        <div class="skill-card">
-          <img src="assets/ChatGPT Image Dec 2, 2025, 09_57_06 AM.png" alt="Premier Pro" class="skill-icon" />
+        <div class="skill-card" role="button" aria-pressed="false" aria-expanded="false">
+          <img src="assets/ChatGPT Image Dec 2, 2025, 09_57_06 AM.png" alt="Premier Pro" class="skill-icon" width="48" height="48" loading="lazy" decoding="async" />
           <h4>Adobe Premiere Pro</h4>
           <div class="skill-bar">
             <div class="skill-fill" style="width: 90%">90%</div>
@@ -94,8 +110,8 @@
           <p class="skill-desc">Editing video & timeline workflow, transisi dasar.</p>
         </div>
 
-        <div class="skill-card">
-          <img src="assets/ChatGPT Image Dec 2, 2025, 09_58_30 AM.png" alt="After Effect" class="skill-icon" />
+        <div class="skill-card" role="button" aria-pressed="false" aria-expanded="false">
+          <img src="assets/ChatGPT Image Dec 2, 2025, 09_58_30 AM.png" alt="After Effect" class="skill-icon" width="48" height="48" loading="lazy" decoding="async" />
           <h4>After Effects</h4>
           <div class="skill-bar">
             <div class="skill-fill" style="width: 80%">80%</div>
@@ -103,8 +119,8 @@
           <p class="skill-desc">Animasi layer sederhana dan efek komposisi.</p>
         </div>
 
-        <div class="skill-card">
-          <img src="assets/ChatGPT Image Dec 2, 2025, 10_00_14 AM.png" alt="Lightroom" class="skill-icon" />
+        <div class="skill-card" role="button" aria-pressed="false" aria-expanded="false">
+          <img src="assets/ChatGPT Image Dec 2, 2025, 10_00_14 AM.png" alt="Lightroom" class="skill-icon" width="48" height="48" loading="lazy" decoding="async" />
           <h4>Lightroom</h4>
           <div class="skill-bar">
             <div class="skill-fill" style="width: 90%">90%</div>

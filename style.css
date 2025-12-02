@@ -113,6 +113,28 @@ section:hover {
   cursor: pointer;
 }
 
+/* Skip-to-content link for keyboard users */
+.skip-link{
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.skip-link:focus{
+  left: 1rem;
+  top: 1rem;
+  width: auto;
+  height: auto;
+  padding: .5rem 1rem;
+  background: rgba(255,255,255,0.95);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(2,8,23,0.08);
+  color: #0b1220;
+  z-index: 9999;
+}
+
 .main-nav {
   /* primary nav centered under header */
   display: block;
@@ -143,6 +165,8 @@ section:hover {
   color: #123;
   box-shadow: 0 6px 18px rgba(2, 8, 23, 0.05);
 }
+.main-nav a:focus, .nav-toggle:focus, .nav-toggle:active { outline: 3px solid rgba(37,117,252,0.16); box-shadow: 0 10px 24px rgba(37,117,252,0.06); }
+.nav-link[aria-current="true"]{ background: rgba(37,117,252,0.12); }
 .main-nav a.active {
   background: rgba(37, 117, 252, 0.11);
   color: #0059ff;
@@ -369,8 +393,8 @@ section h2 {
 
 /* subtle focus for accessible keyboard focus */
 .skill-card:focus {
-  outline: 2px solid rgba(37, 117, 252, 0.12);
-  box-shadow: 0 8px 30px rgba(37, 117, 252, 0.05);
+  outline: 3px solid rgba(37, 117, 252, 0.14);
+  box-shadow: 0 12px 30px rgba(37, 117, 252, 0.08);
 }
 
 .skills-section .skill-card .skill-icon {
