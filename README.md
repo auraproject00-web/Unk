@@ -33,3 +33,6 @@ Notes:
 
 - Make sure the repository is public or configure Pages for a private repository with proper permissions.
 - The action uses the built-in `GITHUB_TOKEN` so you don't need to add secrets.
+
+---
+Trigger note: small update pushed to trigger GitHub Actions deploy on main branch.
