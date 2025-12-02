@@ -66,12 +66,30 @@ if (navToggle) {
   });
 }
 
+// ===== Scroll offset handling for sticky header =====
+function updateScrollOffset() {
+  const headerEl = document.getElementById("header");
+  const offset = headerEl ? headerEl.offsetHeight : 120;
+  // add a tiny extra gap so content doesn't collide with header
+  const gap = 10;
+  const final = offset + gap;
+  document.documentElement.style.setProperty("--scroll-offset", final + "px");
+  return final;
+}
+
+// update on load and resize so mobile/desktop sizes are correct
+window.addEventListener("load", updateScrollOffset);
+window.addEventListener("resize", updateScrollOffset);
+
 // smooth scroll + ensure info panel is visible
 navLinks.forEach((link) => {
   link.addEventListener("click", (e) => {
     e.preventDefault();
     const targetId = link.getAttribute("href");
     const targetEl = document.querySelector(targetId);
+    // recompute offset in case header size changed
+    updateScrollOffset();
+
     // if info not shown, show first
     if (!info.classList.contains("visible")) {
       info.classList.add("visible");
@@ -92,9 +110,16 @@ navLinks.forEach((link) => {
 function updateActiveNav() {
   const sections = document.querySelectorAll("section[id]");
   let current = sections[0];
+  // Determine dynamic threshold from header height so highlight matches visible section
+  const offset =
+    parseInt(
+      getComputedStyle(document.documentElement).getPropertyValue(
+        "--scroll-offset"
+      )
+    ) || 120;
   sections.forEach((sec) => {
     const rect = sec.getBoundingClientRect();
-    if (rect.top <= 120 && rect.bottom >= 120) current = sec;
+    if (rect.top <= offset && rect.bottom >= offset) current = sec;
   });
   navLinks.forEach((link) => link.classList.remove("active"));
   const activeLink = document.querySelector(`.nav-link[href="#${current.id}"]`);
