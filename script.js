@@ -90,16 +90,41 @@ navLinks.forEach((link) => {
     // recompute offset in case header size changed
     updateScrollOffset();
 
-    // if info not shown, show first
+    // recompute offset in case header size changed
+    updateScrollOffset();
+
+    // helper for accurate scroll that accounts for header height
+    const smoothScrollTo = (el) => {
+      if (!el) return;
+      const offset = parseInt(
+        getComputedStyle(document.documentElement).getPropertyValue("--scroll-offset")
+      ) || 120;
+      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    };
+
+    // if info not shown, show first and wait until the info container finishes expanding
     if (!info.classList.contains("visible")) {
-      info.classList.add("visible");
-      toggleIcon.classList.add("up");
-      toggleIcon.classList.remove("bounce");
-      setTimeout(() => {
-        targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 260);
+      let didRun = false;
+      const onExpand = (ev) => {
+        // wait for the max-height transition to finish (or opacity) — run once
+        if (ev && ev.target !== info) return;
+        if (didRun) return;
+        didRun = true;
+        info.removeEventListener('transitionend', onExpand);
+        // small delay to ensure layout settled
+        setTimeout(() => smoothScrollTo(targetEl), 40);
+      };
+
+      // Add visible and update icon, then wait for transitionend (fallback to timeout)
+      info.classList.add('visible');
+      toggleIcon.classList.add('up');
+      toggleIcon.classList.remove('bounce');
+      info.addEventListener('transitionend', onExpand);
+      // fallback in case transitionend doesn't fire (older browsers) — 900ms
+      setTimeout(() => onExpand(), 900);
     } else {
-      targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      smoothScrollTo(targetEl);
     }
     // close mobile nav if open
     if (mainNav.classList.contains("open")) mainNav.classList.remove("open");
