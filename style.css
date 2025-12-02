@@ -17,12 +17,13 @@ html {
 
 body {
   font-family: "Poppins", sans-serif;
-  background: radial-gradient(
-      1200px 600px at 10% 0%,
-      rgba(40, 60, 120, 0.03),
-      transparent
-    ),
-    linear-gradient(180deg, var(--bg-1), var(--bg-2));
+    /* layered background: subtle radial pattern + photo + soft gradient overlay */
+    background-image: radial-gradient(1200px 600px at 10% 0%, rgba(40, 60, 120, 0.03), transparent),
+      linear-gradient(180deg, rgba(6, 12, 28, 0.18), rgba(6, 12, 28, 0.18)),
+      url("assets/DSC05623.jpg");
+    background-position: center, center, center;
+    background-size: cover, cover, cover;
+    background-repeat: no-repeat;
   margin: 0;
   padding: 0;
   color: #333;
@@ -251,7 +252,7 @@ section h2 {
 
 /* Project card */
 .project-card {
-  background: #eee;
+  background: #69f1c4;
   padding: 1rem;
   border-radius: 8px;
   margin-top: 1rem;
