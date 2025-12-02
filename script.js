@@ -62,7 +62,8 @@ const mainNav = document.querySelector(".main-nav");
 if (navToggle) {
   navToggle.addEventListener("click", (e) => {
     e.stopPropagation();
-    mainNav.classList.toggle("open");
+    const open = mainNav.classList.toggle("open");
+    navToggle.setAttribute("aria-expanded", open ? "true" : "false");
   });
 }
 
@@ -71,9 +72,16 @@ function updateScrollOffset() {
   const headerEl = document.getElementById("header");
   const offset = headerEl ? headerEl.offsetHeight : 120;
   // add a tiny extra gap so content doesn't collide with header
+  // add a small gap and add extra space for desktop so titles never hide
   const gap = 10;
+  const desktopExtra = window.innerWidth >= 1000 ? 30 : 0;
   const final = offset + gap;
   document.documentElement.style.setProperty("--scroll-offset", final + "px");
+  // also set an explicit extra-offset variable used by some scroll logic
+  document.documentElement.style.setProperty(
+    "--scroll-extra",
+    desktopExtra + "px"
+  );
   return final;
 }
 
@@ -133,7 +141,10 @@ navLinks.forEach((link) => {
       smoothScrollTo(targetEl);
     }
     // close mobile nav if open
-    if (mainNav.classList.contains("open")) mainNav.classList.remove("open");
+    if (mainNav.classList.contains("open")) {
+      mainNav.classList.remove("open");
+      if (navToggle) navToggle.setAttribute("aria-expanded", "false");
+    }
   });
 });
 
@@ -152,9 +163,15 @@ function updateActiveNav() {
     const rect = sec.getBoundingClientRect();
     if (rect.top <= offset && rect.bottom >= offset) current = sec;
   });
-  navLinks.forEach((link) => link.classList.remove("active"));
+  navLinks.forEach((link) => {
+    link.classList.remove("active");
+    link.removeAttribute("aria-current");
+  });
   const activeLink = document.querySelector(`.nav-link[href="#${current.id}"]`);
-  if (activeLink) activeLink.classList.add("active");
+  if (activeLink) {
+    activeLink.classList.add("active");
+    activeLink.setAttribute("aria-current", "true");
+  }
 }
 
 window.addEventListener("scroll", () => {
@@ -169,12 +186,16 @@ window.addEventListener("load", () => {
   skillCards.forEach((card) => {
     card.setAttribute("tabindex", "0"); // make keyboard focusable
     card.addEventListener("click", () => {
-      card.classList.toggle("expanded");
+      const expanded = card.classList.toggle("expanded");
+      card.setAttribute("aria-expanded", expanded ? "true" : "false");
+      card.setAttribute("aria-pressed", expanded ? "true" : "false");
     });
     card.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        card.classList.toggle("expanded");
+        const expanded = card.classList.toggle("expanded");
+        card.setAttribute("aria-expanded", expanded ? "true" : "false");
+        card.setAttribute("aria-pressed", expanded ? "true" : "false");
       }
     });
   });
