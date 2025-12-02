@@ -1,5 +1,11 @@
 /* Gunakan font Poppins */
 :root {
+  /* ==========================================
+     TIP: ubah warna tulisan global di sini
+     - Ganti nilai --text-color untuk mengubah warna teks di seluruh situs
+     - Contoh: --text-color: #0b1220; untuk teks lebih gelap
+     ========================================== */
+  --text-color: #333; /* default teks (digunakan di body) */
   --bg-1: #40bfe6;
   --bg-2: #3374dd;
   --card: rgba(163, 244, 255, 0.85);
@@ -41,10 +47,15 @@ body {
   ); /* fallback color when image hasn't loaded */
   margin: 0;
   padding: 0;
-  color: #333;
+  /* warna teks global — ganti nilai di :root (--text-color) utk ubah seluruh teks */
+  color: var(--text-color);
 }
 
 /* Header dengan foto profil */
+/* ===== Header (atas) =====
+  - Ini bagian header yang menempel di atas (sticky) dan punya efek blur/translucent
+  - Ubah `backdrop-filter: blur(6px)` untuk mengatur seberapa blur header terlihat
+*/
 header {
   background: linear-gradient(
     180deg,
@@ -62,6 +73,10 @@ header {
 }
 
 .profile-pic {
+  /* ===== Foto profil / avatar =====
+     - Atur ukuran (width/height), border-radius, atau border warna di sini
+     - Contoh: ubah border: 6px solid rgba(255,255,255,0.6) untuk outline yang berbeda
+  */
   width: 120px;
   height: 120px;
   border-radius: 28px; /* soft rounded */
@@ -88,6 +103,12 @@ section {
 }
 
 /* Liquid glass layer: blurred background + soft gradient and border */
+/* ===== Liquid-glass: lapisan buram di belakang konten section =====
+   - Ini yang membuat efek "kaca cair" (frosted glass). Untuk mengubah tampilan:
+     * Ubah background rgba() untuk overlay (lebih gelap/terang)
+     * Ubah `backdrop-filter: blur(3px)` menjadi nilai lebih besar untuk blur kuat
+     * Ubah border: 1px solid rgba(...) untuk tepi kaca
+*/
 section::before {
   content: "";
   position: absolute;
@@ -110,6 +131,12 @@ section::before {
 }
 
 /* Small sheen/gloss using a soft diagonal highlight */
+/* ===== Sheen / gloss kecil di atas kaca =====
+   - `section::after` membuat kilau diagonal tipis. Kontrol:
+     * opacity: mengatur intensitas kilau
+     * filter: blur(8px) menghaluskan kilau
+     * ubah posisi/rotate untuk mengubah arah kilau
+*/
 section::after {
   content: "";
   position: absolute;
@@ -415,6 +442,22 @@ section h2 {
 .about-section .about-text p {
   margin: 0 0 0.75rem 0;
   line-height: 1.5;
+}
+
+/* Add a subtle translucent background + border behind the text next to the photo
+   - This creates a clearer "panel" for text inside the About section
+   - Adjust background opacity and border color to taste
+*/
+.about-section .about-text {
+  padding: 1rem; /* spacing between text and border */
+  border-radius: 10px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.918),
+    rgba(238, 238, 238, 0.863)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.938);
+  box-shadow: 0 6px 18px rgba(2, 8, 23, 0.04);
 }
 
 .about-highlights {
