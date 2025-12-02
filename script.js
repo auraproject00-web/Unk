@@ -96,11 +96,14 @@ navLinks.forEach((link) => {
     // helper for accurate scroll that accounts for header height
     const smoothScrollTo = (el) => {
       if (!el) return;
-      const offset = parseInt(
-        getComputedStyle(document.documentElement).getPropertyValue("--scroll-offset")
-      ) || 120;
+      const offset =
+        parseInt(
+          getComputedStyle(document.documentElement).getPropertyValue(
+            "--scroll-offset"
+          )
+        ) || 120;
       const top = el.getBoundingClientRect().top + window.scrollY - offset;
-      window.scrollTo({ top, behavior: 'smooth' });
+      window.scrollTo({ top, behavior: "smooth" });
     };
 
     // if info not shown, show first and wait until the info container finishes expanding
@@ -111,16 +114,19 @@ navLinks.forEach((link) => {
         if (ev && ev.target !== info) return;
         if (didRun) return;
         didRun = true;
-        info.removeEventListener('transitionend', onExpand);
-        // small delay to ensure layout settled
-        setTimeout(() => smoothScrollTo(targetEl), 40);
+        info.removeEventListener("transitionend", onExpand);
+        // recalculate header height after expansion then scroll (short delay to let layout settle)
+        setTimeout(() => {
+          updateScrollOffset();
+          smoothScrollTo(targetEl);
+        }, 60);
       };
 
       // Add visible and update icon, then wait for transitionend (fallback to timeout)
-      info.classList.add('visible');
-      toggleIcon.classList.add('up');
-      toggleIcon.classList.remove('bounce');
-      info.addEventListener('transitionend', onExpand);
+      info.classList.add("visible");
+      toggleIcon.classList.add("up");
+      toggleIcon.classList.remove("bounce");
+      info.addEventListener("transitionend", onExpand);
       // fallback in case transitionend doesn't fire (older browsers) — 900ms
       setTimeout(() => onExpand(), 900);
     } else {
