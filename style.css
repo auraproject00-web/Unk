@@ -70,6 +70,11 @@ section {
   transition: transform 0.3s ease;
 }
 
+/* Make sure sections respect the sticky header by offsetting scroll position */
+section {
+  scroll-margin-top: var(--scroll-offset, 120px);
+}
+
 section:hover {
   transform: translateY(-5px); /* efek hover */
 }
