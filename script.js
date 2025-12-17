@@ -228,3 +228,109 @@ window.addEventListener("load", () => {
     });
   });
 });
+
+// ===== Gallery Functionality =====
+const galleryData = {
+  portrait: {
+    title: "Portrait Session",
+    photos: [
+      "assets/DSC05623.jpg",
+      "assets/GOPR0186.jpg",
+      "assets/DSC05623.jpg",
+      "assets/GOPR0186.jpg",
+      "assets/DSC05623.jpg",
+      "assets/GOPR0186.jpg"
+    ]
+  },
+  landscape: {
+    title: "Landscape Journey",
+    photos: [
+      "assets/GOPR0186.jpg",
+      "assets/DSC05623.jpg",
+      "assets/GOPR0186.jpg",
+      "assets/DSC05623.jpg",
+      "assets/GOPR0186.jpg",
+      "assets/DSC05623.jpg"
+    ]
+  },
+  street: {
+    title: "Street Photography",
+    photos: [
+      "assets/DSC05623.jpg",
+      "assets/GOPR0186.jpg",
+      "assets/DSC05623.jpg",
+      "assets/GOPR0186.jpg",
+      "assets/DSC05623.jpg",
+      "assets/GOPR0186.jpg"
+    ]
+  }
+};
+
+function showGallery(galleryType) {
+  const projectsSection = document.getElementById("projects");
+  const galleryViewSection = document.getElementById("gallery-view");
+  const galleryTitle = document.getElementById("gallery-title");
+  const galleryGrid = document.getElementById("gallery-grid");
+
+  // Hide projects section and show gallery view
+  projectsSection.classList.add("hidden");
+  galleryViewSection.classList.remove("hidden");
+
+  // Set gallery title
+  galleryTitle.textContent = galleryData[galleryType].title;
+
+  // Clear existing photos
+  galleryGrid.innerHTML = "";
+
+  // Load photos
+  galleryData[galleryType].photos.forEach((photoSrc, index) => {
+    const photoDiv = document.createElement("div");
+    photoDiv.className = "gallery-photo";
+
+    const img = document.createElement("img");
+    img.src = photoSrc;
+    img.alt = `${galleryData[galleryType].title} - Photo ${index + 1}`;
+    img.loading = "lazy";
+
+    photoDiv.appendChild(img);
+    galleryGrid.appendChild(photoDiv);
+  });
+
+  // Scroll to gallery view
+  setTimeout(() => {
+    galleryViewSection.scrollIntoView({ behavior: "smooth" });
+  }, 100);
+}
+
+function hideGallery() {
+  const projectsSection = document.getElementById("projects");
+  const galleryViewSection = document.getElementById("gallery-view");
+
+  // Show projects section and hide gallery view
+  projectsSection.classList.remove("hidden");
+  galleryViewSection.classList.add("hidden");
+
+  // Scroll back to projects section
+  setTimeout(() => {
+    projectsSection.scrollIntoView({ behavior: "smooth" });
+  }, 100);
+}
+
+// Add event listeners for project cards
+window.addEventListener("load", () => {
+  const projectCards = document.querySelectorAll(".project-card[data-gallery]");
+  const backButton = document.getElementById("back-to-projects");
+
+  projectCards.forEach((card) => {
+    card.addEventListener("click", () => {
+      const galleryType = card.getAttribute("data-gallery");
+      if (galleryType && galleryData[galleryType]) {
+        showGallery(galleryType);
+      }
+    });
+  });
+
+  if (backButton) {
+    backButton.addEventListener("click", hideGallery);
+  }
+});

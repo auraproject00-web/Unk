@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Portofolio Unk</title>
+    <title>Portofolio Fotografi Unk</title>
     <!-- Import Google Font Poppins -->
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap"
@@ -14,9 +14,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- SEO / social -->
-    <meta name="description" content="Portofolio Unk — contoh portofolio sederhana dengan HTML, CSS, dan JavaScript. Menampilkan proyek, skill, dan kontak." />
-    <meta property="og:title" content="Portofolio Unk" />
-    <meta property="og:description" content="Portofolio Unk — mini website portofolio (HTML/CSS/JS)." />
+    <meta name="description" content="Portofolio Fotografi Unk — galeri foto profesional dengan tema minimalis modern. Menampilkan karya fotografi, skill editing, dan kontak." />
+    <meta property="og:title" content="Portofolio Fotografi Unk" />
+    <meta property="og:description" content="Portofolio Fotografi Unk — galeri foto dengan desain minimalis modern (HTML/CSS/JS)." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://auraproject00-web.github.io/Unk/" />
     <meta property="og:image" content="assets/DSC05623.jpg" />
@@ -34,7 +34,7 @@
             <img src="assets/DSC05623.jpg" alt="Foto Unk" class="profile-pic" width="160" height="160" loading="lazy" decoding="async" />
           </picture>
           <h1>Halo, gue Unk 👋</h1>
-          <p>Ngoding • Ngedit • Gaming • Ngopi</p>
+          <p>Fotografer • Editor • Visual Storyteller</p>
           <span id="toggle-icon" class="arrow">&#9660;</span>
         </div>
 
@@ -46,8 +46,9 @@
       <nav id="main-nav" class="main-nav" aria-label="Main navigation">
         <ul>
           <li><a class="nav-link" href="#about">Tentang</a></li>
-          <li><a class="nav-link" href="#projects">Proyek</a></li>
+          <li><a class="nav-link" href="#projects">Galeri</a></li>
           <li><a class="nav-link" href="#skills">Skill</a></li>
+          <li><a class="nav-link" href="inventory.html">Inventory</a></li>
           <li><a class="nav-link" href="#contact">Kontak</a></li>
         </ul>
       </nav>
@@ -65,14 +66,13 @@
         </div>
         <div class="about-text">
           <p>
-            Gue lagi belajar web development dari nol. Suka bikin mini project
-            dan ngulik HTML, CSS, JS. Saat ini fokus belajar membuat antarmuka
-            yang sederhana, cepat, dan mudah diakses.
+            Gue fotografer yang passionate dengan dunia visual. Spesialis di fotografi portrait, landscape, dan street photography.
+            Menggunakan Adobe Lightroom dan Photoshop untuk editing yang natural dan berkualitas tinggi.
           </p>
           <ul class="about-highlights">
-            <li>Belajar: HTML, CSS, JavaScript</li>
-            <li>Membuat mini project tiap minggu</li>
-            <li>Suka desain UI sederhana dan responsif</li>
+            <li>Fokus: Portrait, Landscape, Street Photography</li>
+            <li>Editing: Lightroom, Photoshop, Premiere Pro</li>
+            <li>Style: Minimalis, Natural, dan Emosional</li>
           </ul>
         </div>
       </div>
@@ -80,20 +80,31 @@
 
     <!-- Section Projects -->
     <section id="projects" class="fade-in projects-section">
-      <h2>Proyek</h2>
+      <h2>Galeri Foto</h2>
       <div class="projects-grid">
-        <article class="project-card">
-          <h3>Biodata Website</h3>
-          <p>Website biodata interaktif pakai HTML, CSS, dan JavaScript.</p>
+        <article class="project-card" data-gallery="portrait">
+          <h3>Portrait Session</h3>
+          <p>Seri foto portrait dengan pencahayaan natural dan komposisi minimalis.</p>
         </article>
-        <article class="project-card">
-          <h3>Mini Game JS</h3>
-          <p>Permainan sederhana berbasis JavaScript untuk latihan DOM.</p>
+        <article class="project-card" data-gallery="landscape">
+          <h3>Landscape Journey</h3>
+          <p>Eksplorasi pemandangan alam dengan fokus pada tekstur dan cahaya.</p>
         </article>
-        <article class="project-card">
-          <h3>Portfolio V1</h3>
-          <p>Halaman portofolio statis yang responsif untuk presentasi karya.</p>
+        <article class="project-card" data-gallery="street">
+          <h3>Street Photography</h3>
+          <p>Momen-momen jalanan yang autentik dan penuh cerita.</p>
         </article>
+      </div>
+    </section>
+
+    <!-- Gallery View Section -->
+    <section id="gallery-view" class="fade-in gallery-view-section hidden">
+      <div class="gallery-header">
+        <button id="back-to-projects" class="back-button">&larr; Kembali ke Galeri</button>
+        <h2 id="gallery-title">Galeri Foto</h2>
+      </div>
+      <div class="gallery-grid" id="gallery-grid">
+        <!-- Photos will be loaded here dynamically -->
       </div>
     </section>
 
