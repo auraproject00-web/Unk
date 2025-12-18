@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Inventory Barang</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    function InventoryApp() {
+  const [activeSection, setActiveSection] = useState('input');
+  const [formData, setFormData] = useState({
+    sku: '',
+    namaMaterial: '',
+    lokasi1: '',
+    lokasi2: '',
+    lokasi3: '',
+    lokasi4: '',
+    lokasi5: '',
+    lokasi6: '',
+    qty1: '',
+    qty2: '',
+    qty3: '',
+    qty4: '',
+    qty5: '',
+    qty6: '',
+    jumlah: '',
+    satuan: 'pcs',
+    rak: '',
+    keterangan: '',
+    tanggal: new Date().toISOString().split('T')[0]
+  });
+  const [inventoryList, setInventoryList] = useState([]);
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [masterData, setMasterData] = useState([]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('inventoryData');
+    if (saved) {
+      setInventoryList(JSON.parse(saved));
+    }
+  }, []);
+
+  useEffect(() => {
+    const total = (parseFloat(formData.qty1) || 0) +
+                  (parseFloat(formData.qty2) || 0) +
+                  (parseFloat(formData.qty3) || 0) +
+                  (parseFloat(formData.qty4) || 0) +
+                  (parseFloat(formData.qty5) || 0) +
+                  (parseFloat(formData.qty6) || 0);
+    setFormData(prev => ({
+      ...prev,
+      jumlah: total > 0 ? total.toString() : ''
+    }));
+  }, [formData.qty1, formData.qty2, formData.qty3, formData.qty4, formData.qty5, formData.qty6]);
+
+  useEffect(() => {
+    // Embedded CSV data as fallback for local testing
+    const csvData = `sku,namaMaterial,lokasi1,lokasi2,lokasi3,lokasi4,lokasi5,lokasi6
+0001,PP AZ 201B,Gudang A,Rak 1,Lantai 1,,,
+0002,PVC Pipe 2",Gudang B,Rak 2,Lantai 2,,,
+0003,Steel Rod 10mm,Gudang C,Rak 3,Lantai 3,,,
+0004,Cement Portland,Gudang A,Rak 4,Lantai 1,,,
+0005,Sand 5kg,Gudang B,Rak 5,Lantai 2,,,
+0006,Concrete Mixer,Gudang D,Rak 6,Lantai 1,,,
+0007,Wire Cable 10mm,Gudang A,Rak 7,Lantai 2,,,
+0008,Paint Bucket 5L,Gudang C,Rak 8,Lantai 3,,,
+0009,Tile Adhesive,Gudang B,Rak 9,Lantai 1,,,
+0010,Roofing Sheet,,,,,`;
+
+    // Try to load from file first, fallback to embedded data
+    fetch('data.csv')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.text();
+      })
+      .then(csvText => {
+        console.log('CSV file loaded successfully'); // Debug log
+        return Papa.parse(csvText, {
+          header: true,
+          skipEmptyLines: true,
+          complete: (results) => {
+            const validData = results.data.filter(item => item.sku && item.namaMaterial);
+            console.log('Loaded from file:', validData.length, 'items'); // Debug log
+            setMasterData(validData);
+          },
+          error: (error) => {
+            console.error('Error parsing CSV file:', error);
+            throw error;
+          }
+        });
+      })
+      .catch(error => {
+        console.log('Falling back to embedded CSV data due to:', error.message);
+        // Fallback to embedded data
+        Papa.parse(csvData, {
+          header: true,
+          skipEmptyLines: true,
+          complete: (results) => {
+            const validData = results.data.filter(item => item.sku && item.namaMaterial);
+            console.log('Loaded from embedded data:', validData.length, 'items'); // Debug log
+            setMasterData(validData);
+          },
+          error: (error) => {
+            console.error('Error parsing embedded CSV:', error);
+            alert('Error loading master data: ' + error.message);
+          }
+        });
+      });
+  }, []);
+
+  const getLocation = () => {
+    setIsGettingLocation(true);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setFormData(prev => ({
+            ...prev,
+            latitude: position.coords.latitude.toFixed(6),
+            longitude: position.coords.longitude.toFixed(6)
+          }));
+          setIsGettingLocation(false);
+        },
+        (error) => {
+          alert('Tidak dapat mengakses lokasi. Pastikan izin lokasi diaktifkan.');
+          setIsGettingLocation(false);
+        }
+      );
+    } else {
+      alert('Browser tidak mendukung geolokasi');
+      setIsGettingLocation(false);
+    }
+  };
+
+  const handleSubmit = () => {
+    if (!formData.namaMaterial) {
+      alert('Mohon isi nama material');
+      return;
+    }
+
+    if (editingId) {
+      const updatedList = inventoryList.map(item =>
+        item.id === editingId ? { ...formData, id: editingId, timestamp: item.timestamp } : item
+      );
+      setInventoryList(updatedList);
+      localStorage.setItem('inventoryData', JSON.stringify(updatedList));
+      setEditingId(null);
+      alert('Data berhasil diupdate!');
+    } else {
+      const newData = {
+        ...formData,
+        id: Date.now(),
+        timestamp: new Date().toISOString()
+      };
+      const updatedList = [...inventoryList, newData];
+      setInventoryList(updatedList);
+      localStorage.setItem('inventoryData', JSON.stringify(updatedList));
+      alert('Data berhasil disimpan!');
+    }
+
+    resetForm();
+    setActiveSection('list');
+  };
+
+  const resetForm = () => {
+    setFormData({
+      sku: '',
+      namaMaterial: '',
+      lokasi1: '',
+      lokasi2: '',
+      lokasi3: '',
+      lokasi4: '',
+      lokasi5: '',
+      lokasi6: '',
+      qty1: '',
+      qty2: '',
+      qty3: '',
+      qty4: '',
+      qty5: '',
+      qty6: '',
+      jumlah: '',
+      satuan: 'pcs',
+      rak: '',
+      keterangan: '',
+      tanggal: new Date().toISOString().split('T')[0]
+    });
+    setEditingId(null);
+  };
+
+  const handleMasterDataChange = (e) => {
+    const selectedSku = e.target.value;
+    const selectedItem = masterData.find(item => item.sku === selectedSku);
+    if (selectedItem) {
+      setFormData(prev => ({
+        ...prev,
+        sku: selectedItem.sku,
+        namaMaterial: selectedItem.namaMaterial,
+        lokasi1: selectedItem.lokasi1,
+        lokasi2: selectedItem.lokasi2,
+        lokasi3: selectedItem.lokasi3,
+        lokasi4: selectedItem.lokasi4,
+        lokasi5: selectedItem.lokasi5,
+        lokasi6: selectedItem.lokasi6,
+        qty1: selectedItem.qty1 || '',
+        qty2: selectedItem.qty2 || '',
+        qty3: selectedItem.qty3 || '',
+        qty4: selectedItem.qty4 || '',
+        qty5: selectedItem.qty5 || '',
+        qty6: selectedItem.qty6 || ''
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        sku: '',
+        namaMaterial: '',
+        lokasi1: '',
+        lokasi2: '',
+        lokasi3: '',
+        lokasi4: '',
+        lokasi5: '',
+        lokasi6: '',
+        qty1: '',
+        qty2: '',
+        qty3: '',
+        qty4: '',
+        qty5: '',
+        qty6: ''
+      }));
+    }
+  };
+
+  const handleEdit = (item) => {
+    setFormData(item);
+    setEditingId(item.id);
+    setActiveSection('input');
+  };
+
+  const handleDelete = (id) => {
+    if (confirm('Yakin ingin menghapus data ini?')) {
+      const updatedList = inventoryList.filter(item => item.id !== id);
+      setInventoryList(updatedList);
+      localStorage.setItem('inventoryData', JSON.stringify(updatedList));
+    }
+  };
+
+  const openInMaps = (lat, lng) => {
+    window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank');
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-blue-700 to-indigo-700 text-white rounded-t-xl shadow-xl p-6">
+          <div className="flex items-center gap-3">
+            📦
+            <div>
+              <h1 className="text-3xl font-bold">Sistem Inventory Barang</h1>
+              <p className="text-blue-100 text-sm">Kelola stok material dengan FIFO</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Section Tabs */}
+        <div className="bg-white border-b shadow-lg">
+          <div className="flex">
+            <button
+              onClick={() => setActiveSection('input')}
+              className={`flex-1 py-4 px-6 font-bold text-lg transition-all ${
+                activeSection === 'input'
+                  ? 'bg-blue-50 text-blue-700 border-b-4 border-blue-600'
+                  : 'text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              ➕
+              Section 1: Input Data Barang
+            </button>
+            <button
+              onClick={() => setActiveSection('list')}
+              className={`flex-1 py-4 px-6 font-bold text-lg transition-all ${
+                activeSection === 'list'
+                  ? 'bg-blue-50 text-blue-700 border-b-4 border-blue-600'
+                  : 'text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              📋
+              Section 2: Data Inventory ({inventoryList.length})
+            </button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="bg-white rounded-b-xl shadow-xl p-8">
+          {activeSection === 'input' ? (
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">
+                {editingId ? 'Edit Data Barang' : 'Tambah Data Barang Baru'}
+              </h2>
+              
+              <div className="max-w-2xl mx-auto space-y-6">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    Pilih Master Data
+                  </label>
+                  <select
+                    value={formData.sku}
+                    onChange={handleMasterDataChange}
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="">Pilih Material dari Master Data</option>
+                    {masterData.map((item) => (
+                      <option key={item.sku} value={item.sku}>
+                        {item.sku} - {item.namaMaterial}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    SKU
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.sku}
+                    readOnly
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-gray-50"
+                    placeholder="SKU akan terisi otomatis"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    Nama Material *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.namaMaterial}
+                    onChange={(e) => setFormData({...formData, namaMaterial: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Masukkan nama material"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                      Lokasi 1
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.lokasi1}
+                      onChange={(e) => setFormData({...formData, lokasi1: e.target.value})}
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Lokasi 1"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                      Lokasi 2
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.lokasi2}
+                      onChange={(e) => setFormData({...formData, lokasi2: e.target.value})}
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Lokasi 2"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                      Lokasi 3
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.lokasi3}
+                      onChange={(e) => setFormData({...formData, lokasi3: e.target.value})}
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Lokasi 3"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                      Lokasi 4
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.lokasi4}
+                      onChange={(e) => setFormData({...formData, lokasi4: e.target.value})}
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Lokasi 4"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                      Lokasi 5
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.lokasi5}
+                      onChange={(e) => setFormData({...formData, lokasi5: e.target.value})}
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Lokasi 5"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                      Lokasi 6
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.lokasi6}
+                      onChange={(e) => setFormData({...formData, lokasi6: e.target.value})}
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Lokasi 6"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                      Qty 1
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.qty1}
+                      onChange={(e) => setFormData({...formData, qty1: e.target.value})}
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                      Qty 2
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.qty2}
+                      onChange={(e) => setFormData({...formData, qty2: e.target.value})}
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                      Qty 3
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.qty3}
+                      onChange={(e) => setFormData({...formData, qty3: e.target.value})}
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                      Qty 4
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.qty4}
+                      onChange={(e) => setFormData({...formData, qty4: e.target.value})}
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                      Qty 5
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.qty5}
+                      onChange={(e) => setFormData({...formData, qty5: e.target.value})}
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                      Qty 6
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.qty6}
+                      onChange={(e) => setFormData({...formData, qty6: e.target.value})}
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                      Jumlah
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.jumlah}
+                      onChange={(e) => setFormData({...formData, jumlah: e.target.value})}
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                      Satuan
+                    </label>
+                    <select
+                      value={formData.satuan}
+                      onChange={(e) => setFormData({...formData, satuan: e.target.value})}
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="kg">Kg</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    WHRM
+                  </label>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    Tanggal Input
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.tanggal}
+                    onChange={(e) => setFormData({...formData, tanggal: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+              </div>
+
+              {/* Tombol Aksi */}
+              <div className="mt-8 flex gap-4">
+                <button
+                  onClick={handleSubmit}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 text-lg"
+                >
+                  💾
+                  {editingId ? 'Update Data' : 'Simpan Data'}
+                </button>
+                {editingId && (
+                  <button
+                    onClick={resetForm}
+                    className="bg-gray-400 hover:bg-gray-500 text-white font-bold py-4 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  >
+                    ❌
+                    Batal
+                  </button>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">Daftar Inventory Material</h2>
+              
+              {inventoryList.length === 0 ? (
+                <div className="text-center py-16 text-gray-500">
+                  📦
+                  <p className="text-xl font-bold mb-2">Belum ada data inventory</p>
+                  <p className="text-sm">Mulai tambahkan barang dari Section 1</p>
+                </div>
+              ) : (
+                <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {inventoryList.map((item) => (
+                    <div key={item.id} className="bg-gradient-to-br from-white to-blue-50 border-2 border-blue-200 rounded-xl p-6 hover:shadow-xl transition-all">
+                      {/* Header Card */}
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="flex-1">
+                          <h3 className="font-bold text-xl text-gray-800 mb-1">{item.namaMaterial}</h3>
+                        <div className="flex gap-2 items-center">
+                            {item.sku && (
+                              <span className="inline-block bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">
+                                SKU: {item.sku}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleEdit(item)}
+                            className="text-blue-600 hover:text-blue-800 p-2 hover:bg-blue-100 rounded-lg transition-colors"
+                          >
+                            ✏️
+                          </button>
+                          <button
+                            onClick={() => handleDelete(item.id)}
+                            className="text-red-500 hover:text-red-700 p-2 hover:bg-red-100 rounded-lg transition-colors"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Lokasi dan Qty */}
+                      <div className="grid grid-cols-2 gap-2 mb-4">
+                        {(() => {
+                          const locations = [
+                            { name: 'Lokasi 1', value: item.lokasi1, qty: item.qty1 },
+                            { name: 'Lokasi 2', value: item.lokasi2, qty: item.qty2 },
+                            { name: 'Lokasi 3', value: item.lokasi3, qty: item.qty3 },
+                            { name: 'Lokasi 4', value: item.lokasi4, qty: item.qty4 },
+                            { name: 'Lokasi 5', value: item.lokasi5, qty: item.qty5 },
+                            { name: 'Lokasi 6', value: item.lokasi6, qty: item.qty6 }
+                          ].filter(loc => loc.value);
+
+                          return locations.map((loc, index) => (
+                            <div key={loc.name} className="bg-green-50 p-2 rounded-lg border border-green-200 relative">
+                              <p className="text-xs text-green-600 font-semibold">{loc.name}</p>
+                              <p className="text-sm font-bold text-green-800">{loc.value}</p>
+                              <p className="text-xs text-green-700">Qty: {loc.qty || 0}</p>
+                              {index === 0 && (
+                                <span className="absolute top-1 right-1 inline-block bg-red-70 text-red-500 text-xs font-bold px-2 py-1 rounded-full border-2 border-red-100">
+                                  🚀 AMBIL YANG INI
+                                </span>
+                              )}
+                            </div>
+                          ));
+                        })()}
+                      </div>
+
+                      {/* Informasi */}
+                      <div className="grid grid-cols-2 gap-3 mb-4">
+                        <div className="bg-white p-3 rounded-lg border border-gray-200">
+                          <p className="text-xs text-gray-500 font-semibold mb-1">Jumlah</p>
+                          <p className="text-lg font-bold text-gray-800">{item.jumlah || '-'} {item.satuan}</p>
+                        </div>
+
+                        <div className="bg-white p-3 rounded-lg border border-gray-200">
+                          <p className="text-xs text-gray-500 font-semibold mb-1">Rak</p>
+                          <p className="text-sm font-bold text-gray-800">{item.rak || '-'}</p>
+                        </div>
+                      </div>
+
+                      {/* Info Tambahan */}
+                      {item.keterangan && (
+                        <div className="mb-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                          <p className="text-xs text-gray-600 font-semibold mb-1">Keterangan:</p>
+                          <p className="text-sm text-gray-700">{item.keterangan}</p>
+                        </div>
+                      )}
+
+                      <div className="text-xs text-gray-500">
+                        <span className="font-semibold">Tanggal:</span> {item.tanggal}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="text-center text-gray-600 text-sm mt-6 bg-white rounded-lg p-4 shadow">
+          <p className="font-semibold">💾 Data tersimpan otomatis di browser Anda</p>
+          <p className="text-xs mt-1">Total Material: {inventoryList.length} item</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.render(<InventoryApp />, document.getElementById('root'));
+    </script>
+</body>
+</html>
