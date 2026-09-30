@@ -1,39 +1,55 @@
-# Portofolio Unk
+# Catat Uang — Source Code
 
-Small personal portfolio — static HTML/CSS/JS.
+Versi 4, sesuai publikasi terakhir pada 25 September 2026.
+Commit: 96df3e698fc7070470a6748d725a10ffae24eadb
 
-## What I changed
+Aplikasi keuangan pribadi berbasis HTML, CSS, dan JavaScript biasa (tanpa React).
+Tidak memerlukan npm install, build, API key, akun, atau database server.
 
-- Added distinct section layouts (Tentang, Proyek, Skill, Kontak) with a soft, modern UI.
-- New header navigation with smooth scroll and mobile support.
-- Interactive skill cards (click/keyboard to expand descriptions).
+## Menjalankan di laptop
+1. Clone repo ini.
+2. Buka terminal di folder repo.
+3. Jika Python tersedia, jalankan:
 
-## Preview locally
+   python -m http.server 8000
 
-From the project directory run:
+   Pada sebagian komputer, gunakan python3 menggantikan python.
+4. Buka http://localhost:8000 di browser.
 
-```powershell
-Set-Location 'U:\belajar_front_end\portofolio'
-python -m http.server 8000
-# then open http://127.0.0.1:8000
-```
+Jangan mengandalkan klik dua kali index.html untuk mencoba PWA.
+Service worker memerlukan localhost atau HTTPS.
 
-## Deploy to GitHub Pages (two options)
+## Hosting
+Repo ini otomatis di-deploy ke GitHub Pages (branch gh-pages) setiap push ke main.
+Bisa juga diunggah ke hosting web statis lain yang mendukung HTTPS.
+Tidak diperlukan proses build. index.html adalah halaman utama.
 
-Option A – Quick (GitHub UI):
+## Susunan file
+- index.html: struktur halaman dan navigasi.
+- style.css: desain brutalism, responsive layout, animasi scratch.
+- app.js: transaksi, dompet, kategori, penyimpanan, format nominal, ekspor/impor.
+- icons.js: ikon SVG antarmuka.
+- sw.js: service worker dan cache offline.
+- manifest.webmanifest: pengaturan instalasi PWA.
+- icon.svg, icon-192.png, icon-512.png: ikon aplikasi.
 
-1. Push repository to GitHub.
-2. In the repository settings → Pages, set Source to `main` branch and `/ (root)`.
-3. Save — the site should be at `https://<your-username>.github.io/<repo-name>` within a minute.
+## Data dan cadangan
+Catatan tersimpan di localStorage pada browser/perangkat yang dipakai.
+Repo ini berisi kode aplikasi, bukan catatan keuangan pribadi.
+Sebelum berpindah URL/hosting, ekspor JSON dari aplikasi lama lalu impor di URL baru.
+CSV adalah laporan transaksi; gunakan JSON untuk memulihkan seluruh data.
+Mengimpor JSON mengganti seluruh data setelah konfirmasi.
 
-Option B – Automated using GitHub Actions (added here):
-This repo includes a GitHub Actions workflow under `.github/workflows/gh-pages.yml` that publishes the repository root to the `gh-pages` branch automatically whenever you push to `main`.
+## Pembaruan kode
+Saat mengubah aset, naikkan versi CACHE di sw.js agar cache lama diganti.
+Jangan mengganti KEY catat-uang-v1 di app.js tanpa migrasi data.
+Penyimpanan data dan cache aplikasi menggunakan mekanisme berbeda.
 
-Notes:
-
-- Make sure the repository is public or configure Pages for a private repository with proper permissions.
-- The action uses the built-in `GITHUB_TOKEN` so you don't need to add secrets.
-
----
-
-Trigger note: small update pushed to trigger GitHub Actions deploy on main branch.
+## Fitur
+- Pemasukan, pengeluaran, edit/hapus transaksi dan pencarian/filter.
+- Kategori custom, arsip kategori, beberapa dompet dan transfer.
+- Saldo dan ringkasan bulanan.
+- Ekspor/impor JSON dan ekspor CSV.
+- Titik pemisah ribuan otomatis saat input nominal.
+- Navigasi bawah ringkas, ikon garis tebal, efek scratch.
+- PWA dengan dukungan offline setelah aset berhasil dicache.
