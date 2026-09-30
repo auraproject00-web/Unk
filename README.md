@@ -41,7 +41,8 @@ CSV adalah laporan transaksi; gunakan JSON untuk memulihkan seluruh data.
 Mengimpor JSON mengganti seluruh data setelah konfirmasi.
 
 ## Pembaruan kode
-Saat mengubah aset, naikkan versi CACHE di sw.js agar cache lama diganti.
+Saat mengubah aset, naikkan versi CACHE di sw.js agar cache lama diganti,
+dan samakan APP_VERSION di app.js (tampil di bawah halaman Pengaturan).
 Jangan mengganti KEY catat-uang-v1 di app.js tanpa migrasi data.
 Penyimpanan data dan cache aplikasi menggunakan mekanisme berbeda.
 
