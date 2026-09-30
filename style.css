@@ -24,3 +24,4 @@ nav .ui-icon{width:18px;height:18px}
 nav a.active{box-shadow:1px 1px var(--ink)}
 main{padding-bottom:calc(132px + env(safe-area-inset-bottom))}
 #toast{bottom:calc(122px + env(safe-area-inset-bottom))}
+.app-version{text-align:center;font:12px monospace;letter-spacing:1px}
